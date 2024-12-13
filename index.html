@@ -15,8 +15,7 @@
 
     const counterElement = document.getElementById("counter");
     const incrementButton = document.getElementById("increment-btn");
-
-    // Fetch the current counter value from JSONBin
+    
     async function fetchCounter() {
       const response = await fetch(API_URL, {
         headers: { "X-Master-Key": API_KEY }
@@ -25,7 +24,7 @@
       return data.record.counter;
     }
 
-    // Update the counter in JSONBin
+    
     async function updateCounter(newValue) {
       await fetch(API_URL, {
         method: "PUT",
@@ -37,7 +36,7 @@
       });
     }
 
-    // Initialize the counter
+    
     fetchCounter().then((counter) => {
       counterElement.textContent = counter;
 
