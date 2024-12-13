@@ -1,119 +1,52 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <style>
-    body {
-      background-color: #bfd5ff;
-      
-    }
-
-   .container {
-       
-       font-size: 30px;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       margin-top: 100px;
-       animation-name: changer;
-       animation-duration: 6s;
-       animation-iteration-count: infinite;
-       animation-timing-function: linear;
-   }
-   
-   @keyframes changer{
-       
-       100%{
-           color: red;
-       }
-       80%{
-           
-           color: yellow;
-       }
-       60%{
-           
-           color: green;
-       }
-       40%{
-           
-           color: blue;
-       }
-       20%{
-           
-           color: indigo;
-       }
-       0%{
-           
-           color: violet;
-       }
-       
-       
-   }
-   
-   h1{
-       
-       transform: scale(4);
-       opacity: 0;
-       transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-   }
-   
-   .visible{
-       
-       opacity: 1;
-       transform: scale(1);
-   }
-
-  </style>
-  <title>Not click bait</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Counter App</title>
 </head>
 <body>
-    
-    <div class="container">
-        
-        <h1>12:00:00 AM</h1>
-        
-    </div>
-   
- 
-<script>
-    
-    setInterval(()=>{
-        
-        let time = new Date();
-        
-        var display = document.querySelector('h1');
-        
-        display.innerHTML = time.toLocaleTimeString();
-        
-    },100);
-    
-    window.addEventListener('contextmenu', function(e){
-        
-        alert("inspect element not allowed kupal");
-        
-        e.preventDefault();
-    });
-    
-    let windowH = window.innerHeight;
-    
-    function popUp(){
-        
-        var display = document.querySelector('h1');
-        
-        let displayHtop = display.getBoundingClientRect().top;
-        
-        let displayHbot = display.getBoundingClientRect().bottom;
-        
-        if(displayHtop < windowH - 100 && displayHbot > 100){
-            display.classList.add('visible');
-        }else{
-            
-            display.classList.remove('visible');
-        }
-        
-    }
-    
-    window.addEventListener('load', popUp);
-    
-</script>
+  <h1 id="counter">0</h1>
+  <button id="increment-btn">Increase</button>
 
+  <script>
+    const API_URL = "https://api.jsonbin.io/v3/b/675baad1e41b4d34e4648bc4";
+    const API_KEY = "$2a$10$0kDi/dZdDYfnYLus8G/bfOb4G/nXWi9WkP05/AVfaGti6gVT09nEq";
+
+    const counterElement = document.getElementById("counter");
+    const incrementButton = document.getElementById("increment-btn");
+
+    // Fetch the current counter value from JSONBin
+    async function fetchCounter() {
+      const response = await fetch(API_URL, {
+        headers: { "X-Master-Key": API_KEY }
+      });
+      const data = await response.json();
+      return data.record.counter;
+    }
+
+    // Update the counter in JSONBin
+    async function updateCounter(newValue) {
+      await fetch(API_URL, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Master-Key": API_KEY
+        },
+        body: JSON.stringify({ counter: newValue })
+      });
+    }
+
+    // Initialize the counter
+    fetchCounter().then((counter) => {
+      counterElement.textContent = counter;
+
+      incrementButton.addEventListener("click", async () => {
+        const newValue = parseInt(counterElement.textContent) + 1;
+        counterElement.textContent = newValue;
+        await updateCounter(newValue);
+      });
+    });
+  </script>
 </body>
 </html>
